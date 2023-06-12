@@ -1,0 +1,97 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import PostsScreen from "./PostsScreen";
+import CommentsScreen from "./CommentsScreen";
+import MapScreen from "./MapScreen";
+
+import { useUser } from "../../services/userContext";
+
+import {
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
+  Button,
+  View,
+  Text,
+} from "react-native";
+
+import { LogOut } from "react-native-feather";
+
+const MainStack = createStackNavigator();
+
+export default function Home() {
+  const navigation = useNavigation();
+  const {
+    setIsLoggedIn,
+    setLogin,
+    setEmail,
+    setPassword,
+    email,
+    password,
+    login,
+  } = useUser();
+  return (
+    <>
+      <MainStack.Navigator
+        initialRouteName="Posts"
+        screenOptions={({ route }) => ({
+          headerStyle: {
+            height: 88,
+            borderBottomWidth: 1,
+            borderBottomColor: "#E8E8E8",
+          },
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontFamily: "Roboto-Medium",
+            fontSize: 17,
+            lineHeight: 22,
+            alignSelf: "center",
+            textAlign: "center",
+            justifyContent: "center",
+            flex: 0,
+            letterSpacing: -0.408,
+            color: "#212121",
+          },
+          headerRightContainerStyle: {
+            paddingRight: 16,
+          },
+          headerRight: ({ focused, size, color }) => {
+            if (route.name === "Posts") {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsLoggedIn(false);
+                    setLogin("");
+                    setEmail("");
+                    setPassword("");
+                  }}
+                >
+                  <LogOut
+                    stroke="rgba(189, 189, 189, 1)"
+                    strokeWidth={1}
+                    width={24}
+                    height={24}
+                  />
+                </TouchableOpacity>
+              );
+            }
+          },
+        })}
+      >
+        <MainStack.Screen name="Posts" component={PostsScreen} />
+        <MainStack.Screen name="Comments" component={CommentsScreen} />
+        <MainStack.Screen name="Map" component={MapScreen} />
+      </MainStack.Navigator>
+    </>
+  );
+}
